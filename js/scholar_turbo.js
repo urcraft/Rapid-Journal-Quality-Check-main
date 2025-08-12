@@ -149,7 +149,8 @@ demo(); */
         let r3 = journal3.indexOf("…");
            
         if(r3 == -1) {
-            CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings); 
+            CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings);
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
 
         } else if (r3 != -1) {    
             ajax(cite_link).then(function(result) {
@@ -169,15 +170,18 @@ demo(); */
                 n_crawls = n_crawls + 1;
                 
                 if(journal4 != "" && journal4 != undefined && journal4 != "<d") {
-                    CircumventCrossRef(journal4, node, title, compl, scholar, elid, author, settings); 
+                    CircumventCrossRef(journal4, node, title, compl, scholar, elid, author, settings);
+                    if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
                 } else {
                     fetchRank(node, title, compl, scholar, elid, author, settings);
+                    if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
                 }        
                 };
                 crawl();            
             });     
         } else {
                     fetchRank(node, title, compl, scholar, elid, author, settings);
+                    if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
                 }  
 
     });
@@ -224,9 +228,11 @@ scholar_turbo.appendRanks = function (settings) {
         let r3 = journal3.indexOf("…");
                 
         if(r3 == -1) {
-            CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings); 
+            CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings);
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
         } else {
-            fetchRank(node, title, compl, scholar, elid, author, settings); 
+            fetchRank(node, title, compl, scholar, elid, author, settings);
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
         } 
         
       }

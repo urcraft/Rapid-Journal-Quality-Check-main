@@ -21,7 +21,12 @@ CircumventCrossRef = function (journal3, node, title, compl, scholar, elid, auth
     url = url.normalize('NFD');
     url = url.replace(/[^A-Z0-9]/ig, "");
         
-    let position_start = ccf.FullRank_Names.indexOf("X_X" + url + "\1/");
+    let position_start = -1;
+    try {
+        if (ccf && typeof ccf.FullRank_Names === 'string') {
+            position_start = ccf.FullRank_Names.indexOf("X_X" + url + "\x01/");
+        }
+    } catch(e) { position_start = -1; }
            
     if (position_start != -1) {
         for (let getRankSpan of scholar.rankSpanList) {
@@ -109,11 +114,12 @@ scholar.appendRank = function (full_url, settings) {
            
         if(r3 == -1) {
             CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings); 
-
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
+ 
         } else {
                     fetchRank(node, title, compl, scholar, elid, author, settings);
-                }  
-
+                    if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
+                 }  
     });
 };
 
@@ -159,8 +165,10 @@ scholar.appendRanks = function (settings) {
                 
         if(r3 == -1) {
             CircumventCrossRef(journal3, node, title, compl, scholar, elid, author, settings); 
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
         } else {
             fetchRank(node, title, compl, scholar, elid, author, settings); 
+            if(window.jufo && window.jufo.ensureByQuery) { try { window.jufo.ensureByQuery(node, title, compl, author, settings); } catch(_){} }
         } 
         
       }

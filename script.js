@@ -22,6 +22,8 @@ loadSettings().then(function(items) {
     settings.DAEN = items.DAEN;
     settings.AJG = items.AJG;
     settings.ABDC = items.ABDC;
+    // Default JUFO to true if not set yet, so it appears without requiring a save
+    settings.JUFO = (items.JUFO !== undefined) ? items.JUFO : true;
     settings.FT50 = items.FT50;
     settings.turbo = items.turbo;
     settings.ext_on = items.ext_on;

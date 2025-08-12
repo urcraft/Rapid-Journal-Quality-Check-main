@@ -28,6 +28,7 @@ function save_options() {
     DAEN: document.getElementById('DAEN').checked,
     AJG: document.getElementById('AJG').checked,
     ABDC: document.getElementById('ABDC').checked,
+    JUFO: document.getElementById('JUFO').checked,
     FT50: document.getElementById('FT50').checked,
     turbo: document.getElementById('turbo').checked
   });
@@ -57,6 +58,7 @@ function restore_options() {
     DAEN: document.getElementById('DAEN').checked,
     AJG: document.getElementById('AJG').checked,
     ABDC: document.getElementById('ABDC').checked,
+    JUFO: document.getElementById('JUFO').checked,
     FT50: document.getElementById('FT50').checked,
     turbo: document.getElementById('turbo').checked
   }, function(items) {
@@ -72,6 +74,7 @@ function restore_options() {
     document.getElementById('DAEN').checked = items.DAEN;
     document.getElementById('AJG').checked = items.AJG;
     document.getElementById('ABDC').checked = items.ABDC;
+    document.getElementById('JUFO').checked = items.JUFO;
     document.getElementById('FT50').checked = items.FT50;
     document.getElementById('turbo').checked = items.turbo;
   });
@@ -90,6 +93,7 @@ document.getElementById('CCF').addEventListener('click', save_options);
 document.getElementById('DAEN').addEventListener('click', save_options);
 document.getElementById('AJG').addEventListener('click', save_options);
 document.getElementById('ABDC').addEventListener('click', save_options);
+document.getElementById('JUFO').addEventListener('click', save_options);
 document.getElementById('FT50').addEventListener('click', save_options);
 document.getElementById('turbo').addEventListener('click', save_options);
 

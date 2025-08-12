@@ -292,6 +292,19 @@
     background-color:  var(--aplus-color);
 }
 
+/* JUFO */
+.JUFO_1 {
+    background-color:  var(--c-color);
+}
+
+.JUFO_2 {
+    background-color:  var(--b-color);
+}
+
+.JUFO_3 {
+    background-color:  var(--a-color);
+}
+
 
 /* NAs */
 
@@ -336,6 +349,10 @@
 }
 
 .FT50_na {
+    background-color: var(--na-color);
+}
+
+.JUFO_na {
     background-color: var(--na-color);
 }
 

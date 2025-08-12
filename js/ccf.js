@@ -9,6 +9,44 @@
 
 const ccf = {};
 
+// Defensive defaults so lookups won’t crash if data files aren’t yet loaded
+ccf.SJR_Q     = ccf.SJR_Q     || {};
+ccf.SJR_Hi    = ccf.SJR_Hi    || {};
+ccf.VHB       = ccf.VHB       || {};
+ccf.VHB4      = ccf.VHB4      || {};
+ccf.FNEGE     = ccf.FNEGE     || {};
+ccf.CoNRS     = ccf.CoNRS     || {};
+ccf.HCERES    = ccf.HCERES    || {};
+ccf.CORE      = ccf.CORE      || {};
+ccf.source    = ccf.source    || {};
+ccf.CORE_c    = ccf.CORE_c    || {};
+ccf.CCF       = ccf.CCF       || {};
+ccf.AJG       = ccf.AJG       || {};
+ccf.JCR       = ccf.JCR       || {};
+ccf.SNIP      = ccf.SNIP      || {};
+ccf.SJR       = ccf.SJR       || {};
+ccf.CiteSc    = ccf.CiteSc    || {};
+ccf.ABDC      = ccf.ABDC      || {};
+ccf.FT50      = ccf.FT50      || {};
+
+ccf.issnSJR_Q   = ccf.issnSJR_Q   || {};
+ccf.issnSJR_H   = ccf.issnSJR_H   || {};
+ccf.issnVHB     = ccf.issnVHB     || {};
+ccf.issnVHB4    = ccf.issnVHB4    || {};
+ccf.issnFNEGE   = ccf.issnFNEGE   || {};
+ccf.issnCoNRS   = ccf.issnCoNRS   || {};
+ccf.issnHCERE   = ccf.issnHCERE   || {};
+ccf.issnCORE    = ccf.issnCORE    || {};
+ccf.issnsource  = ccf.issnsource  || {};
+ccf.issnCORE_c  = ccf.issnCORE_c  || {};
+ccf.issnDAEN    = ccf.issnDAEN    || {};
+ccf.issnAJG     = ccf.issnAJG     || {};
+ccf.issnJCR     = ccf.issnJCR     || {};
+ccf.issnSNIP    = ccf.issnSNIP    || {};
+ccf.issnSJR     = ccf.issnSJR     || {};
+ccf.issnCiteS   = ccf.issnCiteS   || {};
+ccf.issnABDC    = ccf.issnABDC    || {};
+
 ccf.getRankInfo = function (refine, type, ISSN1, ISSN2, dblp_venue) {
     let rankInfo = {};
     rankInfo.ranks = [];
@@ -40,26 +78,26 @@ ccf.getRankInfo = function (refine, type, ISSN1, ISSN2, dblp_venue) {
         dblp_venue = dblp_venue.toUpperCase(); 
         dblp_venue = dblp_venue.replace(/[^A-Z0-9]/ig, "");
     
-        let position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\1/");
+    let position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\x01/");
        
         if (position_start_CORE == -1) {
             dblp_venue = dblp_venue.replace(/^IEEE/g, ""); 
-            position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\1/");
+            position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\x01/");
         }
         
         if (position_start_CORE == -1) {
             dblp_venue = dblp_venue.replace(/^ACM/g, ""); 
-            position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\1/");
+            position_start_CORE = ccf.FullRank_Acro.indexOf("X_X" + dblp_venue + "\x01/");
         }
 
         if (position_start_CORE != -1) {
-            let sjrq2_pos_s_CORE = ccf.FullRank_Acro.indexOf("\1/", position_start_CORE);
-            let sjrq2_pos_e_CORE = ccf.FullRank_Acro.indexOf("\2/", position_start_CORE);
+            let sjrq2_pos_s_CORE = ccf.FullRank_Acro.indexOf("\x01/", position_start_CORE);
+            let sjrq2_pos_e_CORE = ccf.FullRank_Acro.indexOf("\x02/", position_start_CORE);
             let sjrq2_CORE = ccf.FullRank_Acro.substring( (sjrq2_pos_s_CORE + 2), sjrq2_pos_e_CORE);
             rankInfo.rank_CORE = sjrq2_CORE; // looks for the V5 rank
             
-            sjrq2_pos_s_CORE = ccf.FullRank_Acro.indexOf("\2/", position_start_CORE);
-            sjrq2_pos_e_CORE = ccf.FullRank_Acro.indexOf("\3/", position_start_CORE);
+            sjrq2_pos_s_CORE = ccf.FullRank_Acro.indexOf("\x02/", position_start_CORE);
+            sjrq2_pos_e_CORE = ccf.FullRank_Acro.indexOf("\x03/", position_start_CORE);
             sjrq2_CORE = ccf.FullRank_Acro.substring( (sjrq2_pos_s_CORE + 2), sjrq2_pos_e_CORE);
             rankInfo.refine_CORE = sjrq2_CORE; // looks for the full name of the venue
 
@@ -255,7 +293,7 @@ ccf.getRankInfo = function (refine, type, ISSN1, ISSN2, dblp_venue) {
                     rankInfo.AllRanks.FT50 = sjrq2;
                     rankInfo.ranks.push(sjrq2);
 
-                    sjrq2 = ccf.Core_c[url] || "NA";
+                    sjrq2 = ccf.CORE_c[url] || "NA";
                     rankInfo.AllRanks.CORE_Conf = sjrq2;
                     rankInfo.ranks.push(sjrq2);
 

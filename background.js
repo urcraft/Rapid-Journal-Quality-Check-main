@@ -14,6 +14,7 @@ browser.runtime.onInstalled.addListener(function(details){
         DAEN: false,
         AJG: false,
         ABDC: false,
+  JUFO: false,
         FT50: false,
         VHB4: false, // new
         turbo: true
