@@ -198,15 +198,37 @@
                 }
               }
             }
-            // Optional user-provided hint patterns: settings.JUFO_CUSTOM_HINTS = [{pattern:"/regex/i", issn:"1234-5678"}, ...]
-            const hints = Array.isArray(settings.JUFO_CUSTOM_HINTS) ? settings.JUFO_CUSTOM_HINTS : [];
-            // Permanent hint for CHI / PACMHCI mismatch
-            hints.push({ pattern: /CHI Conference|Human Factors in Computing Systems/i, issn: '2573-0142' });
+            // Load hint rules from separate file (if available), and optional user-provided hints
+            const hints = [];
+            if(window.scholar && Array.isArray(window.scholar.jufo_rules)) {
+              // Note: patterns from JSON are strings, need to convert to RegExp
+              for(const rule of window.scholar.jufo_rules) {
+                if(!rule || !rule.pattern || !rule.issn) continue;
+                try {
+                  if(typeof rule.pattern === 'string' && rule.pattern.startsWith('/')) {
+                    const parts = rule.pattern.match(/^\/(.*)\/([gimuy]*)$/);
+                    if(parts) {
+                      hints.push({ pattern: new RegExp(parts[1], parts[2]), issn: rule.issn });
+                    }
+                  } else {
+                    hints.push({ pattern: new RegExp(rule.pattern, "i"), issn: rule.issn });
+                  }
+                } catch(e) {
+                  if(debug) console.warn("JUFO invalid hint rule pattern", rule, e);
+                }
+              }
+            }
+            if(Array.isArray(settings.JUFO_CUSTOM_HINTS)) {
+              hints.push(...settings.JUFO_CUSTOM_HINTS);
+            }
+            // New: support hints with `name`/`names` and/or a forced `level` in addition to `issn`
+            const hintNames = [];
+            let forcedLevel = null;
             if(hints.length > 0) {
               try {
                 const texts = [title, compl||""].concat(containerTitles);
                 for(const hint of hints) {
-                  if(!hint || !hint.pattern || !hint.issn) continue;
+                  if(!hint || !hint.pattern) continue;
                   let re = hint.pattern;
                   if(typeof re === 'string') {
                     // Allow pattern strings like "/.../i"
@@ -215,7 +237,12 @@
                     else re = new RegExp(re, 'i');
                   }
                   for(const txt of texts) {
-                    if(txt && re.test(txt)) cand.push(hint.issn);
+                    if(txt && re.test(txt)) {
+                      if(hint.issn) cand.push(hint.issn);
+                      if(hint.name) hintNames.push(hint.name);
+                      if(Array.isArray(hint.names)) hintNames.push(...hint.names);
+                      if(hint.level && !forcedLevel) forcedLevel = String(hint.level);
+                    }
                   }
                 }
               } catch(_) { /* ignore bad hints */ }
@@ -252,7 +279,9 @@
               if(cand.length === 0) await harvestFromContainerTitles();
               if(debug && cand.length === 0) console.log("JUFO still no ISSNs after container-title harvest", {title});
 
-              let level = null;
+              // If a forcedLevel is provided by hints, honor it immediately
+              let level = forcedLevel ? String(forcedLevel) : null;
+              if(debug && forcedLevel) console.log('JUFO forced level from hint', forcedLevel);
               for(const issn of cand) {
                 level = await fetchJufoByIssn(issn);
                 if(debug) console.log("JUFO probe", issn, level);
@@ -270,6 +299,14 @@
                     if(debug) console.log("JUFO retry probe", issn, level);
                     if(level) break;
                   }
+                }
+              }
+              // Try any hint-provided names before generic name fallbacks
+              if(!level && hintNames.length) {
+                for(const nm of hintNames) {
+                  const nameLevel = await fetchJufoByName(nm);
+                  if(debug) console.log('JUFO hint name fallback', nm, nameLevel);
+                  if(nameLevel) { level = nameLevel; break; }
                 }
               }
               // Final fallback: try name lookups (title then container titles)
